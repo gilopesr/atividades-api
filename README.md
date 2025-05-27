@@ -39,8 +39,8 @@ Estrutura Modular: Organização do código com Blueprints para facilitar a manu
 1.  **Clone o repositório:**
 
     ```bash
-      git clone [https://github.com/brunaferreir/API-SchoolSystem.git](https://github.com/brunaferreir/API-SchoolSystem.git)
-      cd API-SchoolSystem
+      git clone [https://github.com/gilopesr/atividades-api.git](https://github.com/gilopesr/atividades-api.git)
+      cd Atividades
     ```
 
 2.  **Crie um ambiente virtual (recomendado):**
