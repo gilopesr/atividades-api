@@ -57,33 +57,6 @@ Estrutura Modular: Organização do código com Blueprints para facilitar a manu
     pip install -r requirements.txt
     ```
 
-4.  **Configure o banco de dados:**
-
-    * Crie um arquivo de configuração (por exemplo, `config.py`) com as configurações do seu banco de dados. Exemplo para SQLite:
-    * A API pode ser configurada para usar PostgreSQL com Docker Compose (recomendado) ou SQLite para desenvolvimento local.
-
-Opção A: Usando PostgreSQL com Docker Compose (Recomendado)
-Modifique seu arquivo config.py para ler a URI do banco de dados de uma variável de ambiente:
-
-        ```python
-       # config.py
-      import os
-      from flask import Flask
-      from flask_sqlalchemy import SQLAlchemy
-      
-      app = Flask(__name__)
-      
-      app.config['HOST'] = '0.0.0.0'
-      app.config['PORT']=5003
-      app.config['DEBUG'] = True
-      # Lê a URI do banco de dados da variável de ambiente DATABASE_URL
-      # Se não estiver definida, usa SQLite como fallback para desenvolvimento local sem Docker
-      app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL', 'sqlite:///app.db')
-      app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-        ```
-
-    * Se você estiver usando um banco de dados diferente, ajuste a string de conexão (`SQLALCHEMY_DATABASE_URI`) de acordo.
-
 5.  **Configure as variáveis de ambiente:**
 
     * Defina a variável `FLASK_APP` para o nome do seu arquivo principal (geralmente `app.py` ou `__init__.py`).
