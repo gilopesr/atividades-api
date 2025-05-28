@@ -24,7 +24,7 @@ Estrutura Modular: Organização do código com Blueprints para facilitar a manu
   * Docker
   * Docker Compose
 
- ## Integração com Microserviços
+ ## 🧩 Integração com Microserviços
  
 Este serviço opera como parte de um ecossistema de microserviços, interagindo com a API-SchoolSystem:
 
@@ -129,16 +129,15 @@ Certifique-se de ter os arquivos Dockerfile e docker-compose.yml na raiz do seu 
 A estrutura do projeto é a seguinte:  📂
 
     ```
-    ├── Reserva/
+    ├── Atividade/
     |   ├── controllers/
     |   │   ├── __init__.py
-    |   │   └── reserva_route.py
+    |   │   └── atividade_controller.py
     |   ├── models/
     |   │   ├── __init__.py
-    |   │   └── reserva_model.py
+    |   │   └── atividade_model.py
     |   ├── config.py
     |   ├── app.py   
-    |   ├── database.py  
     |   ├── dockerfile
     |   ├── requirements.txt
     |   └── docker-compose.yml
