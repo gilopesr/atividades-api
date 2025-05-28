@@ -1,4 +1,4 @@
-# API de Atividades :orange_book:
+# Sistema de Controle de Atividades :orange_book:
 
 ## Descrição
 
@@ -24,6 +24,14 @@ Estrutura Modular: Organização do código com Blueprints para facilitar a manu
   * Docker
   * Docker Compose
 
+ ## Integração com Microserviços
+ 
+Este serviço opera como parte de um ecossistema de microserviços, interagindo com a API-SchoolSystem:
+
+API-SchoolSystem: Responsável por dados de turmas e professores.
+
+Serviço de Atividades: Gerencia unicamente a lógica de agendamento de atividades.
+
 
 ## Pré-requisitos
 
@@ -34,7 +42,6 @@ Estrutura Modular: Organização do código com Blueprints para facilitar a manu
 * Docker Compose (geralmente incluído na instalação do Docker Desktop)
 
 ## Configuração e Instalação
-## Instalação
 
 1.  **Clone o repositório:**
 
