@@ -1,18 +1,17 @@
-# Sistema de Controle de Atividades :orange_book:
-
-## Descrição
+# Sistema de  Gestão de Atividades e Submissões  :orange_book:
 
 Este é uma API RESTful focada no gerenciamento de Atividades. Desenvolvida com Flask, esta API oferece funcionalidades completas de Criação, Leitura, Atualização e Exclusão (CRUD) para dados relacionados a atividades, garantindo a persistência em um banco de dados relacional.
 
-## Funcionalidades
+### Funcionalidades Principais:
 
-Gerenciamento de Atividades: 
+* **Criação de Atividades:** Permite incluir o ID da disciplina, o enunciado da atividade e uma lista opcional de respostas de alunos. Cada resposta inclui o ID do aluno, o conteúdo da resposta e a nota. O ID do aluno é validado externamente.
 
-Capacidade de criar, visualizar, atualizar e excluir registros de atividades.
+* **Consulta de Atividades:** Fornece uma lista completa de atividades, com todos os seus detalhes e as submissões associadas a cada uma.
 
-Persistência de Dados: Armazenamento seguro de informações em um banco de dados relacional.
+* **Buscar Atividade por ID** Consulta os detalhes de uma atividade específica.
 
-Estrutura Modular: Organização do código com Blueprints para facilitar a manutenção e escalabilidade.
+* **Atualizar Atividade :** PModifica informações de uma atividade ou suas submissões.
+* **Exclusão de Atividade:** Permite Remover uma atividade do sistema.
 
  ## 🔧 Tecnologias Utilizadas
 
@@ -20,9 +19,33 @@ Estrutura Modular: Organização do código com Blueprints para facilitar a manu
   * Flask
   * Flask-RESTx
   * SQLAlchemy (ORM)
-  * Swagger
   * Docker
   * Docker Compose
+
+
+## Estrutura do Projeto
+
+A estrutura do projeto é a seguinte:  📂
+
+    ```
+    ├── Atividade/
+    |   ├── controllers/
+    |   │   ├── __init__.py
+    |   │   └── atividade_controller.py
+    |   ├── models/
+    |   │   ├── __init__.py
+    |   │   └── atividade_model.py
+    |   ├── config.py
+    |   ├── app.py   
+    |   ├── dockerfile
+    |   ├── requirements.txt
+    |   └── docker-compose.yml
+    ├── LICENCE
+    └── README.md
+    ```
+    
+
+
 
  ## 🧩 Integração com Microserviços
  
@@ -80,19 +103,11 @@ Serviço de Atividades: Gerencia unicamente a lógica de agendamento de atividad
         set FLASK_APP=app.py
         ```
 
-## Execução
 
-1.  **Inicialize o banco de dados:**
-
-    ```bash
-    with app.app_context():
-    db.create_all()
-    ```
-
-  **Execute a API:**
+  ## Como Executar a API:
 Você pode executar a API diretamente ou usando Docker Compose.
 
-2. Executando com Docker Compose (Recomendado)
+1. Executando com Docker Compose (Recomendado)
 Certifique-se de ter os arquivos Dockerfile e docker-compose.yml na raiz do seu projeto.
 
     ```bash
@@ -107,44 +122,101 @@ Certifique-se de ter os arquivos Dockerfile e docker-compose.yml na raiz do seu 
 
  ## Acesse a documentação:
 
-    * A API estará disponível em `http://localhost:5003/atividades` (ou na porta e host configurados).
-  
- ## Endpoints da API:
+    * A API estará disponível em `http://localhost:5003/api` 
+
    
-   * A API expõe os seguintes endpoints específicos para o gerenciamento de Atividades:
+  ## Endpoints da API (Rotas)
 
-   Atividades (/atividades)
-* GET /atividades: Lista todas as atividades.
-* GET /atividades/<id>: Obtém uma atividade específica por ID.
-* POST /atividades: Cria uma nova atividade. 
-* PUT /atividades/<id>: Atualiza uma atividade existente por ID. 
-* DELETE /atividades/<id>: Exclui uma atividade por ID.
+A API de Reservas de Salas expõe os seguintes endpoints:
 
-(Nota: Os endpoints acima são exemplos baseados em uma estrutura CRUD típica. Consulte o código-fonte em controllers/atividade_controller.py para os endpoints exatos e seus parâmetros.)
-  
+### Atividades (`/api/atividades`)
 
+#### `POST /atividades`
 
-## Estrutura do Projeto
+Cria uma nova atividade e opcionalmente suas submissões iniciais.
 
-A estrutura do projeto é a seguinte:  📂
+* **Corpo da Requisição (JSON):**
+    ```json
+   {
+    "id_disciplina": 101,
+    "enunciado": "Crie um app de todo em Flask com autenticação de usuário.",
+    "respostas": [
+        {
+            "id_aluno": 1,
+            "resposta": "todo_app_v1.py",
+            "nota": 9
+        },
+        {
+            "id_aluno": 2,
+            "resposta": "todo_app_final.zip",
+            "nota": 10
+        }
+    ]
+   }
+    ```
+
+* **Respostas:**
+    * `201 OK`: Reserva criada com sucesso. Retorna os detalhes da reserva criada.
+    * `400 Bad Request`: Dados inválidos (campos faltando, formato incorreto, ID inválido, hora de início >= hora de fim).
+    * `400 Bad Request`: Turma ou professor não encontrados/API-SchoolSystem indisponível.
+    * `409 Conflict`: Conflito de horário para a sala e período especificados.
+
+#### `GET /atividades`
+
+Lista todas as atividades existentes no sistema.
+
+* **Respostas:**
+    * `200 OK`: Retorna uma lista de objetos de atividades.
+   
+
+   ---
+
+#### `GET /atividades/<int:id_atividade>`
+
+Obtém os detalhes de uma atividade específica pelo seu ID.
+
+* **Parâmetros de URL:**
+    * `id_atividade` (inteiro): O ID único da atividade .
+* **Respostas:**
+    * `200 OK`: Retorna o objeto da atividade.
+    * `404 Not Found`: Atividade não encontrada.
+
+---
+
+#### `PATCH /atividades/<int:id_atividade>`
+
+Permite a atualização parcial de uma atividade. Pode atualizar o enunciado, a disciplina e/ou manipular as submissões (adicionar novas, atualizar existentes ou remover)..
+
+* **Parâmetros de URL:**
+    * `id_atividade` (inteiro): O ID único da atividade a ser atualizada.
+* **Corpo da Requisição (JSON):**
+    ```json
+    {
+    "id_disciplina": 102,
+    "enunciado": "Refatore o app de todo para usar Blueprints e SQLAlchemy."
+   }
 
     ```
-    ├── Atividade/
-    |   ├── controllers/
-    |   │   ├── __init__.py
-    |   │   └── atividade_controller.py
-    |   ├── models/
-    |   │   ├── __init__.py
-    |   │   └── atividade_model.py
-    |   ├── config.py
-    |   ├── app.py   
-    |   ├── dockerfile
-    |   ├── requirements.txt
-    |   └── docker-compose.yml
-    ├── LICENCE
-    └── README.md
-    ```
-    
+
+* **Respostas:**
+    * `200 OK`: { "mensagem": "Atividade atualizada com sucesso" }
+    * `400 Bad Request`: { "erro": "Mensagem de erro" }
+    * `404 Not Found`: { "erro": "Atividade não encontrada." }
+    * `500 Internal Server Error`: { "erro": "Ocorreu um erro ao atualizar a atividade." }
+
+---
+
+
+#### `DELETE /atividades/<int:id_atividade>`
+
+Deleta uma atividade existente pelo seu ID.
+
+* **Parâmetros de URL:**
+    * `id_atividade` (inteiro): O ID único da atividade a ser deletada.
+* **Respostas:**
+    * `200 OK`: Atividade deletada com sucesso.
+    * `404 Not Found`: Atividade não encontrada.
+
 ## Configuração
 
 A aplicação é configurada através da classe `Config` no arquivo `config.py`. As seguintes opções estão disponíveis:

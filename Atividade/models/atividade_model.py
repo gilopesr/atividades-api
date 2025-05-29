@@ -1,32 +1,26 @@
-atividades = [
-    {
-        'id_atividade': 1,
-        'id_disciplina': 1,
-        'enunciado': 'Crie um app de todo em Flask',
-        'respostas': [
-            {'id_aluno': 1, 'resposta': 'todo.py', 'nota': 9},
-            {'id_aluno': 2, 'resposta': 'todo.zip.rar'},
-            {'id_aluno': 4, 'resposta': 'todo.zip', 'nota': 10}
-        ]
-    },
-    {
-        'id_atividade': 2,
-        'id_disciplina': 1,
-        'enunciado': 'Crie um servidor que envia email em Flask',
-        'respostas': [
-            {'id_aluno': 4, 'resposta': 'email.zip', 'nota': 10}
-        ]
-    }
-]
+from database import db
+from sqlalchemy.orm import relationship
 
-class AtividadeNotFound(Exception):
-    pass
+class Atividade(db.Model):
+    __tablename__ = 'atividades'
+    id_atividade = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_disciplina = db.Column(db.Integer, nullable=False) # ID da disciplina, não o nome
+    enunciado = db.Column(db.Text, nullable=False)
 
-def listar_atividades():
-    return atividades
+    submissoes = relationship('Submissao', backref='atividade', lazy=True, cascade="all, delete-orphan")
 
-def obter_atividade(id_atividade):
-    for atividade in atividades:
-        if atividade['id_atividade'] == id_atividade:
-            return atividade
-    raise AtividadeNotFound
+    def __repr__(self):
+        return f"<Atividade {self.id_atividade} - Disciplina {self.id_disciplina}>"
+
+class Submissao(db.Model):
+    __tablename__ = 'submissoes'
+    id_submissao = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id_atividade = db.Column(db.Integer, db.ForeignKey('atividades.id_atividade'), nullable=False)
+    id_aluno = db.Column(db.Integer, nullable=False) # ID do aluno
+    resposta = db.Column(db.Text, nullable=False) # A resposta textual/arquivo do aluno
+    nota = db.Column(db.Integer, nullable=True) # Nota atribuída à submissão
+
+    def __repr__(self):
+        return f"<Submissao {self.id_submissao} - Atv {self.id_atividade} - Aluno {self.id_aluno}>"
+
+# Não precisamos de AtividadeNaoEncontrada, pois os erros serão tratados com 404 e 500.
