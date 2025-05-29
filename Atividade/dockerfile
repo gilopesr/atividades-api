@@ -1,38 +1,21 @@
 FROM python:3.9-slim-buster
 
-# Define o diretório de trabalho dentro do contêiner
 WORKDIR /app
 
-# Copia o arquivo de requisitos e instala as dependências
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia todo o código da sua aplicação para o diretório de trabalho
+
 COPY . .
 
-# Expõe a porta que sua aplicação Flask está usando (5003)
+
 EXPOSE 5003
 
-# Comando para iniciar a aplicação Flask diretamente
-# Garanta que seu app.py está chamando app.run() com host='0.0.0.0' e port=5003
+
 CMD ["python", "app.py"]
 
 
 
 
 
-# FROM python:3.9-slim-buster
-
-# WORKDIR /app
-
-# COPY . /app
-
-# RUN pip install --no-cache-dir -r requirements.txt
-
-# EXPOSE 5003
-
-# ENV FLASK_APP=app.py
-# ENV FLASK_RUN_HOST=0.0.0.0
-# ENV FLASK_RUN_PORT=5003
-
-# CMD ["flask", "run"]
