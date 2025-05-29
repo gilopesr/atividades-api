@@ -138,6 +138,7 @@ Cria uma nova atividade e opcionalmente suas submissões iniciais.
 * **Corpo da Requisição (JSON):**
     ```json
    {
+    "id_professor": 1,
     "id_disciplina": 101,
     "enunciado": "Crie um app de todo em Flask com autenticação de usuário.",
     "respostas": [
