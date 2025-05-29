@@ -18,10 +18,21 @@ def validar_aluno(id_aluno):
         pass
     return None
 
+def validar_professor(id_professor):
+    try:
+        resp = requests.get(f"http://localhost:5002/api/professores/{id_professor}")
+        if resp.status_code == 200:
+            dados = resp.json()
+            return dados.get("nome")
+    except requests.RequestException:
+        pass
+    return None
+
 
 @routes.route("/atividades", methods=["POST"])
 def criar_atividade():
     dados = request.json
+    id_professor = dados.get("id_professor")
     id_disciplina = dados.get("id_disciplina")
     enunciado = dados.get("enunciado")
     respostas_recebidas = dados.get("respostas")
@@ -32,6 +43,8 @@ def criar_atividade():
         return jsonify({"erro": "enunciado é obrigatório"}), 400
     if respostas_recebidas is not None and not isinstance(respostas_recebidas, list):
         return jsonify({"erro": "'respostas' deve ser uma lista"}), 400
+    if id_professor is None:
+        return jsonify({"erro": "id_professor é obrigatório"}), 400
 
     alunos_validos = {}
     if respostas_recebidas:
@@ -54,10 +67,15 @@ def criar_atividade():
                 if not nome_aluno:
                     return jsonify({"erro": f"Aluno com ID {id_aluno} não encontrado ou serviço de aluno indisponível."}), 400
                 alunos_validos[id_aluno] = nome_aluno 
+
+    nome_professor = validar_professor(id_professor)
+    if not nome_professor:
+        return jsonify({"erro": "Professor não encontrado ou serviço de professores indisponível"}), 400
+    
     try:
         
         atividade = Atividade(
-           
+            id_professor = id_professor,
             id_disciplina=id_disciplina,
             enunciado=enunciado
         )
@@ -104,6 +122,7 @@ def listar_atividades():
                 })
 
             lista_atividades.append({
+                "id_professor": atividade.id_professor,
                 "id_atividade": atividade.id_atividade,
                 "id_disciplina": atividade.id_disciplina,
                 "enunciado": atividade.enunciado,
@@ -136,6 +155,7 @@ def buscar_atividade_por_id(id_atividade):
             })
 
         atividade_data = {
+            "id_professor": atividade.id_professor,
             "id_atividade": atividade.id_atividade,
             "id_disciplina": atividade.id_disciplina,
             "enunciado": atividade.enunciado,
